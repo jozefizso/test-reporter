@@ -60,7 +60,7 @@ export class JavaJunitParser implements TestParser {
     }
   }
 
-  private getTestRunResult(filePath: string, junit: JunitReport): TestRunResult {
+  protected getTestRunResult(filePath: string, junit: JunitReport): TestRunResult {
     const suites =
       junit.testsuites.testsuite === undefined
         ? []
@@ -76,7 +76,7 @@ export class JavaJunitParser implements TestParser {
     return new TestRunResult(filePath, suites, time)
   }
 
-  private getGroups(suite: TestSuite): TestGroupResult[] {
+  protected getGroups(suite: TestSuite): TestGroupResult[] {
     if (suite.testcase === undefined) {
       return []
     }
