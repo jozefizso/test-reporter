@@ -268,6 +268,7 @@ const mocha_json_parser_1 = __nccwpck_require__(6043);
 const swift_xunit_parser_1 = __nccwpck_require__(5366);
 const path_utils_1 = __nccwpck_require__(4070);
 const github_utils_1 = __nccwpck_require__(3522);
+const tester_junit_parser_1 = __nccwpck_require__(2907);
 function main() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
@@ -436,6 +437,8 @@ class TestReporter {
                 return new mocha_json_parser_1.MochaJsonParser(options);
             case 'swift-xunit':
                 return new swift_xunit_parser_1.SwiftXunitParser(options);
+            case 'tester-junit':
+                return new tester_junit_parser_1.TesterJunitParser(options);
             default:
                 throw new Error(`Input variable 'reporter' is set to invalid value '${reporter}'`);
         }
@@ -1420,6 +1423,41 @@ class SwiftXunitParser extends java_junit_parser_1.JavaJunitParser {
     }
 }
 exports.SwiftXunitParser = SwiftXunitParser;
+
+
+/***/ }),
+
+/***/ 2907:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.TesterJunitParser = void 0;
+const test_results_1 = __nccwpck_require__(2768);
+const java_junit_parser_1 = __nccwpck_require__(676);
+class TesterJunitParser extends java_junit_parser_1.JavaJunitParser {
+    constructor(options) {
+        super(options);
+        this.options = options;
+    }
+    getTestRunResult(filePath, junit) {
+        var _a;
+        const suites = junit.testsuites.testsuite === undefined
+            ? []
+            : junit.testsuites.testsuite.map(ts => {
+                var _a, _b;
+                const name = (_b = (_a = ts.$.name) === null || _a === void 0 ? void 0 : _a.trim()) !== null && _b !== void 0 ? _b : 'Test Suite';
+                const time = parseFloat(ts.$.time) * 1000;
+                const sr = new test_results_1.TestSuiteResult(name, this.getGroups(ts), time);
+                return sr;
+            });
+        const seconds = parseFloat((_a = junit.testsuites.$) === null || _a === void 0 ? void 0 : _a.time);
+        const time = isNaN(seconds) ? undefined : seconds * 1000;
+        return new test_results_1.TestRunResult(filePath, suites, time);
+    }
+}
+exports.TesterJunitParser = TesterJunitParser;
 
 
 /***/ }),
