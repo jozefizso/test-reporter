@@ -1,5 +1,4 @@
-import { Console } from 'console'
-import {ParseOptions, TestParser} from '../../test-parser'
+import {ParseOptions, TestParser} from '../../test-parser.js'
 import {
   TestCaseError,
   TestCaseResult,
@@ -7,8 +6,8 @@ import {
   TestGroupResult,
   TestRunResult,
   TestSuiteResult
-} from '../../test-results'
-import {RspecJson, RspecExample} from './rspec-json-types'
+} from '../../test-results.js'
+import {RspecJson, RspecExample} from './rspec-json-types.js'
 
 export class RspecJsonParser implements TestParser {
   assumedWorkDir: string | undefined

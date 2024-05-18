@@ -1,12 +1,10 @@
 import {createWriteStream} from 'fs'
+import {pipeline as streamPipeline} from 'node:stream/promises'
 import * as core from '@actions/core'
 import * as github from '@actions/github'
-import {GitHub} from '@actions/github/lib/utils'
+import type {GitHub} from '@actions/github/lib/utils.js'
 import type {PullRequest} from '@octokit/webhooks-types'
-import * as stream from 'stream'
-import {promisify} from 'util'
 import got from 'got'
-const asyncStream = promisify(stream.pipeline)
 
 export function getCheckRunContext(): {sha: string; runId: number} {
   if (github.context.eventName === 'workflow_run') {
@@ -61,7 +59,7 @@ export async function downloadArtifact(
       core.info(`Progress: ${transferred} B`)
     })
 
-    await asyncStream(downloadStream, fileWriterStream)
+    await streamPipeline(downloadStream, fileWriterStream)
   } finally {
     core.endGroup()
   }
